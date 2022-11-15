@@ -16,7 +16,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
 const createApolloClient = (ctx?: GetServerSidePropsContext) => {
 	const httpLink = new HttpLink({
 		uri: 'http://localhost:4000/graphql',
-		credentials: 'same-origin', // same-origin for same domaion | include if different domain
+		credentials: 'include', // same-origin for same domain | include if different domain
 	});
 
 	return new ApolloClient({
