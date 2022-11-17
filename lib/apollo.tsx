@@ -22,13 +22,17 @@ const createApolloClient = (ctx?: GetServerSidePropsContext) => {
 	return new ApolloClient({
 		cache: new InMemoryCache(),
 		link: httpLink,
+		ssrMode: typeof window === 'undefined', //
 	});
 };
 
-export const initializeApolloClient = (initialState: Record<string, any> | null = null, ctx = undefined) => {
+export const initializeApolloClient = (
+	initialState: Record<string, any> | null = null,
+	ctx: GetServerSidePropsContext | undefined = undefined
+) => {
 	const client = apolloClient ?? createApolloClient(ctx);
 
-	// If page has Nextjs data fetchin methods that use Apollo Client
+	// If page has Nextjs data fetching methods that use Apollo Client
 	// The initial state gets hydrated here
 	if (initialState) {
 		// Gets the existing cache, loaded during client side data fetching
@@ -47,7 +51,7 @@ export const initializeApolloClient = (initialState: Record<string, any> | null 
 		client.cache.restore(data);
 	}
 
-	// For SSG|SSR always create a new Apollo Client Object
+	// For SSG|SSR always create a new Apollo Client Object (Basically running on the server not browser)
 	if (typeof window === 'undefined') {
 		return client;
 	}
