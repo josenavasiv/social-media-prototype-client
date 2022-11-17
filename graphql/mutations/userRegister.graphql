@@ -1,12 +1,11 @@
 mutation userRegister($credentials: UserCredentialsInput!, $email: String!) {
 	userRegister(credentials: $credentials, email: $email) {
+		user {
+			...User
+		}
 		errors {
 			field
 			message
-		}
-		user {
-			id
-			username
 		}
 	}
 }

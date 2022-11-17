@@ -3,14 +3,14 @@ import { Form, Formik } from 'formik';
 import Wrapper from '../components/Wrapper';
 import InputField from '../components/InputField';
 import { Box, Button } from '@chakra-ui/react';
-import { MeDocument, MeQuery, useUserRegisterMutation } from '../graphql/__generated__/graphql';
+import { MeDocument, MeQuery, useUserLoginMutation } from '../graphql/__generated__/graphql';
 import { toErrorMap } from '../utilities/toErrorMap';
 import { useRouter } from 'next/router';
 
-interface RegisterProps {}
+interface LoginProps {}
 
-const Register = (props: RegisterProps): ReactElement | null => {
-	const [register, { data, loading, error }] = useUserRegisterMutation();
+const Login = (props: LoginProps): ReactElement | null => {
+	const [userLogin, { data, loading, error }] = useUserLoginMutation();
 	const router = useRouter();
 
 	if (loading) {
@@ -28,38 +28,36 @@ const Register = (props: RegisterProps): ReactElement | null => {
 	return (
 		<Wrapper variant="small">
 			<Formik
-				initialValues={{ username: '', password: '', email: '' }}
+				initialValues={{ username: '', password: '' }}
 				onSubmit={async (values, { setErrors }) => {
-					const { username, email, password } = values;
-					const response = await register({
+					const { username, password } = values;
+					const response = await userLogin({
 						variables: {
 							credentials: {
 								username,
 								password,
 							},
-							email,
 						},
-						// This updates the specific ME Query within the NavBar Component
+						// This updates the specific ME Query within the NavBar Component 
 						update: (cache, { data }) => {
 							cache.writeQuery<MeQuery>({
 								query: MeDocument,
 								data: {
 									__typename: 'Query',
-									me: data?.userRegister.user,
+									me: data?.userLogin.user,
 								},
 							});
 							cache.evict({ fieldName: 'posts:{}' });
 						},
 					});
 
-					console.log(response.data?.userRegister); // Returns as the UserPayloadType
-
 					// Check if we have errors
-					if (response.data?.userRegister?.errors && response.data.userRegister.errors.length > 0) {
-						setErrors(toErrorMap(response.data?.userRegister.errors));
-					} else if (response.data?.userRegister.user) {
+					if (response.data?.userLogin?.errors && response.data.userLogin.errors.length > 0) {
+						setErrors(toErrorMap(response.data.userLogin.errors));
+					} else if (response.data?.userLogin.user?.username) {
 						router.push('/');
 					}
+
 					return;
 				}}
 			>
@@ -67,13 +65,10 @@ const Register = (props: RegisterProps): ReactElement | null => {
 					<Form>
 						<InputField name="username" placeholder="username" label="Username" type="text" />
 						<Box mt={4}>
-							<InputField name="email" placeholder="email" label="Email" type="text" />
-						</Box>
-						<Box mt={4}>
 							<InputField name="password" placeholder="password" label="Password" type="password" />
 						</Box>
 						<Button mt={4} type="submit" colorScheme="teal" isLoading={isSubmitting}>
-							Register
+							Login
 						</Button>
 					</Form>
 				)}
@@ -82,4 +77,4 @@ const Register = (props: RegisterProps): ReactElement | null => {
 	);
 };
 
-export default Register;
+export default Login;
