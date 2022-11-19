@@ -67,7 +67,7 @@ const Register = (props: RegisterProps): ReactElement | null => {
 					<Form>
 						<InputField name="username" placeholder="username" label="Username" type="text" />
 						<Box mt={4}>
-							<InputField name="email" placeholder="email" label="Email" type="text" />
+							<InputField name="email" placeholder="email" label="Email" type="email" />
 						</Box>
 						<Box mt={4}>
 							<InputField name="password" placeholder="password" label="Password" type="password" />

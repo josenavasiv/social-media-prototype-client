@@ -2,10 +2,11 @@ import React, { ReactElement } from 'react';
 import { Form, Formik } from 'formik';
 import Wrapper from '../components/Wrapper';
 import InputField from '../components/InputField';
-import { Box, Button } from '@chakra-ui/react';
+import { Box, Button, Flex } from '@chakra-ui/react';
 import { MeDocument, MeQuery, useUserLoginMutation } from '../graphql/__generated__/graphql';
 import { toErrorMap } from '../utilities/toErrorMap';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 interface LoginProps {}
 
@@ -38,7 +39,7 @@ const Login = (props: LoginProps): ReactElement | null => {
 								password,
 							},
 						},
-						// This updates the specific ME Query within the NavBar Component 
+						// This updates the specific ME Query within the NavBar Component
 						update: (cache, { data }) => {
 							cache.writeQuery<MeQuery>({
 								query: MeDocument,
@@ -67,9 +68,19 @@ const Login = (props: LoginProps): ReactElement | null => {
 						<Box mt={4}>
 							<InputField name="password" placeholder="password" label="Password" type="password" />
 						</Box>
-						<Button mt={4} type="submit" colorScheme="teal" isLoading={isSubmitting}>
-							Login
-						</Button>
+						<Flex mt={2}>
+							<Button mt={4} type="submit" colorScheme="teal" isLoading={isSubmitting}>
+								Login
+							</Button>
+							<Box ml={'auto'}>
+								<Link
+									style={{ color: 'blue', textDecorationLine: 'underline' }}
+									href="/forgot-password"
+								>
+									Forgot Password?
+								</Link>
+							</Box>
+						</Flex>
 					</Form>
 				)}
 			</Formik>
