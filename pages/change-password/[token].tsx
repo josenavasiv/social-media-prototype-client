@@ -1,4 +1,3 @@
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Form, Formik } from 'formik';
 import { Box, Button, Flex } from '@chakra-ui/react';
@@ -9,7 +8,7 @@ import { MeDocument, MeQuery, useUserChangePasswordMutation } from '../../graphq
 import { toErrorMap } from '../../utilities/toErrorMap';
 import Link from 'next/link';
 
-const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
+const ChangePassword = () => {
 	const [userChangePassword, { data, error, loading }] = useUserChangePasswordMutation();
 	const router = useRouter();
 	const [tokenError, setTokenError] = useState('');
@@ -34,9 +33,9 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
 					const { newPassword } = values;
 					const response = await userChangePassword({
 						variables: {
-							token,
+							token: typeof router.query.token === 'string' ? router.query.token : '',
 							newPassword,
-						},
+						}, // Nextjs knows its token since it looks at the dynamic page file name
 						// Update the cache for the me query since changing password logs in user
 						update: (cache, { data }) => {
 							cache.writeQuery<MeQuery>({
@@ -98,13 +97,6 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
 			</Formik>
 		</Wrapper>
 	);
-};
-
-// Getting the dynamic url parameter within the page functional component
-ChangePassword.getInitialProps = ({ query }) => {
-	return {
-		token: query.token as string,
-	};
 };
 
 export default ChangePassword;

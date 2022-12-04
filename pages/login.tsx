@@ -56,7 +56,14 @@ const Login = (props: LoginProps): ReactElement | null => {
 					if (response.data?.userLogin?.errors && response.data.userLogin.errors.length > 0) {
 						setErrors(toErrorMap(response.data.userLogin.errors));
 					} else if (response.data?.userLogin.user?.username) {
-						router.push('/');
+						// router.push('/');
+
+						// Redirecting based on the router object
+						if (typeof router.query.next === 'string') {
+							router.push(router.query.next);
+						} else {
+							router.push('/');
+						}
 					}
 
 					return;

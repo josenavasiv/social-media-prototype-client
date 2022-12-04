@@ -4,6 +4,7 @@ import { GetServerSidePropsContext } from 'next';
 import merge from 'deepmerge';
 import isEqual from 'lodash.isequal';
 import { useMemo } from 'react';
+import { PaginatedPostsPayload } from '../graphql/__generated__/graphql';
 
 interface PageProps {
 	props?: Record<string, any>;
@@ -19,10 +20,32 @@ const createApolloClient = (ctx?: GetServerSidePropsContext) => {
 		credentials: 'include', // same-origin for same domain | include if different domain
 	});
 
+	const cache = new InMemoryCache({
+		typePolicies: {
+			Query: {
+				fields: {
+					posts: {
+						keyArgs: [],
+						merge(
+							existing: PaginatedPostsPayload | undefined,
+							incoming: PaginatedPostsPayload
+						): PaginatedPostsPayload {
+							return {
+								...incoming,
+								posts: [...(existing?.posts || []), ...incoming.posts],
+							};
+						},
+					},
+				},
+			},
+		},
+	});
+
 	return new ApolloClient({
-		cache: new InMemoryCache(),
+		cache,
+		// cache: new InMemoryCache(),
 		link: httpLink,
-		ssrMode: typeof window === 'undefined', //
+		ssrMode: typeof window === 'undefined', // Determines if loading on the browser or server
 	});
 };
 

@@ -50,7 +50,7 @@ const NavBar = ({}: NavBarProps) => {
 	}
 
 	return (
-		<Flex bg="pink.900" p={4}>
+		<Flex position={'sticky'} top={0} zIndex={1} bg="pink.900" p={4}>
 			<Box ml="auto">{body}</Box>
 		</Flex>
 	);
