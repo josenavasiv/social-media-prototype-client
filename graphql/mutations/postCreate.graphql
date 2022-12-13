@@ -1,13 +1,5 @@
 mutation postCreate($title: String!, $text: String!) {
 	postCreate(title: $title, text: $text) {
-		id
-		title
-		text
-		points
-		createdAt
-		updatedAt
-		user {
-			id
-		}
+		...Post
 	}
 }

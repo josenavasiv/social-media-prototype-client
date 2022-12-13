@@ -5,6 +5,7 @@ import { usePostsQuery } from '../graphql/__generated__/graphql';
 import Layout from '../components/Layout';
 import Link from 'next/link';
 import { VStack, Box, Heading, Text, Flex, Button } from '@chakra-ui/react';
+import UpvoteSection from '../components/UpvoteSection';
 
 // export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 // 	const apolloClient = initializeApolloClient(null, ctx);
@@ -56,14 +57,19 @@ export default function Home() {
 				<div>loading...</div>
 			) : (
 				<VStack spacing={8}>
-					{data?.posts.posts.map((p) => {
-						return (
-							<Box key={p.id} p={5} shadow="md" borderWidth="1px" w={'full'}>
-								<Heading fontSize="xl">{p.title}</Heading>
-								<Text mt={4}>{p.text.slice(0, 50)}</Text>
-							</Box>
-						);
-					})}
+					{data?.posts.posts.map((p) =>
+						!p ? null : (
+							<Flex key={p.id} w={'full'} p={5} shadow="md" borderWidth="1px">
+								<UpvoteSection post={p} />
+
+								<Box key={p.id} w={'full'}>
+									<Heading fontSize="xl">{p.title}</Heading>
+									<Text>posted by {p.user.username}</Text>
+									<Text mt={4}>{p.text.slice(0, 50)}</Text>
+								</Box>
+							</Flex>
+						)
+					)}
 				</VStack>
 			)}
 			{data && data.posts.hasMore ? (

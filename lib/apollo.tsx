@@ -30,6 +30,14 @@ const createApolloClient = (ctx?: GetServerSidePropsContext) => {
 							existing: PaginatedPostsPayload | undefined,
 							incoming: PaginatedPostsPayload
 						): PaginatedPostsPayload {
+							console.log('EXISTING');
+							console.log(existing?.posts);
+							console.log('INCOMING');
+							console.log(incoming?.posts);
+							
+
+							// const posts = [...(existing?.posts || []), ...incoming.posts]
+
 							return {
 								...incoming,
 								posts: [...(existing?.posts || []), ...incoming.posts],
